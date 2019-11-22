@@ -46,7 +46,6 @@ var eventService = (() => {
 
   updateEvent = async event => {
     const event_info = await EventModel.findById(event._id);
-    console.log("update ))))", event);
     return new Promise(async (resolve, reject) => {
       try {
         const is_image_uploaded = await utility.writeFile(event.eventImage);

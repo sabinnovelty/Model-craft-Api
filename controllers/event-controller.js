@@ -1,10 +1,13 @@
 const router = require("express").Router();
 const httpResonse = require("../common/http-response");
 const eventService = require("../services/event-service");
+const path = require("path");
 
 router.post("/create", (req, res) => {
+  let image_path = path.join(__dirname, "../", "assests", "images", "event");
   const eventImage = req.files ? req.files.file : null;
   req.body["eventImage"] = eventImage;
+  console.log("body", req.body);
   if (req.body["_id"] !== "undefined") {
     console.log("update ******************", req.body);
     try {
@@ -19,7 +22,13 @@ router.post("/create", (req, res) => {
       .createEvent(req.body)
       .then(event => {
         console.log("create event", event);
-        httpResonse.success(res, Object.assign(event, { create: true }));
+        httpResonse.success(
+          res,
+          Object.assign(event, {
+            create: true,
+            imagePath: `${image_path}/${event.image_name}`
+          })
+        );
       })
       .catch(error => {
         httpResonse.errorHandler(res, error);
@@ -41,7 +50,6 @@ router.put("/", (req, res) => {
 });
 
 router.get("/list", (req, res) => {
-  const path = require("path");
   let image_path = path.join(__dirname, "../", "assests", "images", "event");
   console.log(image_path);
   eventService
@@ -53,8 +61,8 @@ router.get("/list", (req, res) => {
           title: x.title,
           description: x.description,
           location: x.location,
-          startDate: x.start_date,
-          endDate: x.end_date,
+          startDate: x.startDate,
+          endDate: x.endDate,
           image_name: x.image_name,
           isActive: x.isActive,
           imageName: x.image_name,
