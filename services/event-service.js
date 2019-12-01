@@ -2,14 +2,8 @@ var eventService = (() => {
   const utility = require("../utility/utility");
   const HttpStatus = require("http-status-codes");
   const EventModel = require("../models/event");
-  // var query = {'username':req.user.username};
-  // req.newData.username = req.user.username;
-  // MyModel.findOneAndUpdate(query, req.newData, {upsert:true}, function(err, doc){
-  //     if (err) return res.send(500, { error: err });
-  //     return res.send("succesfully saved");
-  // });
+
   createEvent = event => {
-    console.log("create event", event);
     return new Promise(async (resolve, reject) => {
       try {
         const is_image_uploaded = await utility.writeFile(event.eventImage);
@@ -38,48 +32,74 @@ var eventService = (() => {
 
   eventList = () => {
     return new Promise(async (resolve, reject) => {
-      const event_list = await EventModel.find({}).sort({ start_date: -1 });
-      console.log("event list", event_list);
-      resolve(event_list);
+      try {
+        const event_list = await EventModel.find({}).sort({ start_date: -1 });
+        resolve(event_list);
+      } catch (error) {
+        reject(error);
+      }
     });
   };
-
+  // Date.now() + "_" + event.eventImage.name,
   updateEvent = async event => {
-    const event_info = await EventModel.findById(event._id);
+    return new Promise(async (resolve, reject) => {
+      if (event.eventImage) {
+        const is_image_uploaded = await utility.writeFile(event.eventImage);
+        if (is_image_uploaded.upload) {
+          const find_event = await EventModel.findById(event._id);
+          await utility.unlinkFile(find_event.image_name);
+          EventModel.findById(event._id).then(result => {
+            result.title = event.title;
+            result.description = event.description;
+            result.location = event.location;
+            result.startDate = event.startDate;
+            result.endDate = event.endDate;
+            result.image_name = is_image_uploaded.imageName;
+            result.isActive = event.isActive;
+            result.save().then(success => {
+              resolve(result)
+            })
+          })
+
+        } else {
+          reject({ message: 'Internal Server error' })
+        }
+      } else {
+
+        EventModel.findById(event._id).then(result => {
+          result.title = event.title;
+          result.description = event.description;
+          result.location = event.location;
+          result.startDate = event.startDate;
+          result.endDate = event.endDate;
+          result.image_name = result.image_name;
+          result.isActive = event.isActive;
+          result.save().then(success => {
+            console.log('event updated', success);
+            resolve(success)
+          })
+        })
+      }
+    })
+
+  };
+
+  getEventById = id => {
     return new Promise(async (resolve, reject) => {
       try {
-        const is_image_uploaded = await utility.writeFile(event.eventImage);
-        console.log("update image uplodate", is_image_uploaded);
-        if (is_image_uploaded.upload) {
-          const event_info = await EventModel.findById(event._id);
-          console.log("image uploaded ***", event_info);
-          await utility.unlinkFile(event_info.image_name);
-        }
-
-        const update_event = await EventModel.update(
-          { _id: event._id },
-          {
-            $set: {
-              title: event.title,
-              description: event.description,
-              location: event.location,
-              startDate: event.startDate,
-              endDate: event.endDate,
-              image_name: is_image_uploaded.imageName,
-              isActive: event.isActive
-            }
-          }
-        );
-        console.log("updated event", update_event);
-        resolve(true);
-      } catch (error) {}
+        const event = await EventModel.findById(id);
+        resolve(event);
+      } catch (error) {
+        reject(error);
+      }
     });
   };
 
   return {
     createEvent: createEvent,
     eventList: eventList,
-    updateEvent: updateEvent
+    updateEvent: updateEvent,
+    getEventById: getEventById
   };
 })();
 

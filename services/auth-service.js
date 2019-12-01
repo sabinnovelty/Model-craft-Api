@@ -17,7 +17,6 @@ var authService = (() => {
           reject({ message: "Authentication failed!" });
         }
         const token = generateToken(user_info);
-        console.log("sdfsdfsd", token);
         resolve(token);
       } catch (error) {
         reject(error);
@@ -42,7 +41,7 @@ var authService = (() => {
     });
   };
 
-  forgotPassword = model => {};
+  forgotPassword = model => { };
 
   return {
     signIn: signIn,

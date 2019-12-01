@@ -7,39 +7,27 @@ router.post("/create", (req, res) => {
   let image_path = path.join(__dirname, "../", "assests", "images", "event");
   const eventImage = req.files ? req.files.file : null;
   req.body["eventImage"] = eventImage;
-  console.log("body", req.body);
-  if (req.body["_id"] !== "undefined") {
-    console.log("update ******************", req.body);
-    try {
-      eventService.updateEvent(req.body).then(event_update => {
-        httpResonse.success(res, Object.assign(req.body, { update: true }));
-      });
-    } catch (error) {
+  eventService
+    .createEvent(req.body)
+    .then(event => {
+      httpResonse.success(
+        res,
+        Object.assign(event, {
+          create: true,
+          imagePath: `${image_path}/${event.image_name}`
+        })
+      );
+    })
+    .catch(error => {
       httpResonse.errorHandler(res, error);
-    }
-  } else {
-    eventService
-      .createEvent(req.body)
-      .then(event => {
-        console.log("create event", event);
-        httpResonse.success(
-          res,
-          Object.assign(event, {
-            create: true,
-            imagePath: `${image_path}/${event.image_name}`
-          })
-        );
-      })
-      .catch(error => {
-        httpResonse.errorHandler(res, error);
-      });
-  }
+    });
 });
 
 router.put("/", (req, res) => {
-  console.log("update event", req.files);
+
   const eventImage = req.files ? req.files.file : null;
   req.body["eventImage"] = eventImage;
+  console.log('update event file called **', req.body)
   try {
     eventService.updateEvent(req.body).then(event_update => {
       httpResonse.success(res, { success: true });
@@ -50,8 +38,7 @@ router.put("/", (req, res) => {
 });
 
 router.get("/list", (req, res) => {
-  let image_path = path.join(__dirname, "../", "assests", "images", "event");
-  console.log(image_path);
+  let image_path = 'assests/images/event'
   eventService
     .eventList()
     .then(eventlist => {
@@ -69,12 +56,23 @@ router.get("/list", (req, res) => {
           imagePath: `${image_path}/${x.image_name}`
         };
       });
-      console.log("map", map_event_list);
       httpResonse.success(res, map_event_list);
     })
     .catch(error => {
       httpResonse.errorHandler(res, error);
     });
+});
+
+router.get("/:id", (req, res) => {
+  const event_id = req.params.id;
+
+  try {
+    eventService.getEventById(event_id).then(event => {
+      httpResonse.success(res, { data: event });
+    });
+  } catch (error) {
+    httpResonse.errorHandler(res, error);
+  }
 });
 
 module.exports = router;
