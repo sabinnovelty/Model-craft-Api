@@ -10,6 +10,8 @@ router.post("/create", (req, res) => {
   eventService
     .createEvent(req.body)
     .then(event => {
+      event['new'] = 'sd'
+      console.log('event created controller', event)
       httpResonse.success(
         res,
         Object.assign(event, {
@@ -24,13 +26,11 @@ router.post("/create", (req, res) => {
 });
 
 router.put("/", (req, res) => {
-
   const eventImage = req.files ? req.files.file : null;
   req.body["eventImage"] = eventImage;
-  console.log('update event file called **', req.body)
   try {
     eventService.updateEvent(req.body).then(event_update => {
-      httpResonse.success(res, { success: true });
+      httpResonse.success(res, event_update);
     });
   } catch (error) {
     httpResonse.errorHandler(res, error);
@@ -63,6 +63,15 @@ router.get("/list", (req, res) => {
     });
 });
 
+router.get('/new', (req, res) => {
+  eventService.getLatestEvent().then(result => {
+    httpResonse.success(res, { data: result });
+
+  }).catch(error => {
+    httpResonse.errorHandler(res, error);
+  })
+})
+
 router.get("/:id", (req, res) => {
   const event_id = req.params.id;
 
@@ -74,5 +83,16 @@ router.get("/:id", (req, res) => {
     httpResonse.errorHandler(res, error);
   }
 });
+
+router.delete('/:id', (req, res) => {
+  try {
+    const event_id = req.params.id;
+    eventService.deleteEventById(event_id).then(event => {
+      httpResonse.success(res, { success: true });
+    });
+  } catch (error) {
+    httpResonse.errorHandler(res, error);
+  }
+})
 
 module.exports = router;

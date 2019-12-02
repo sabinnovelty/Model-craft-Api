@@ -57,7 +57,7 @@ var eventService = (() => {
             result.image_name = is_image_uploaded.imageName;
             result.isActive = event.isActive;
             result.save().then(success => {
-              resolve(result)
+              resolve(success)
             })
           })
 
@@ -65,7 +65,7 @@ var eventService = (() => {
           reject({ message: 'Internal Server error' })
         }
       } else {
-
+        console.log('8**', event)
         EventModel.findById(event._id).then(result => {
           result.title = event.title;
           result.description = event.description;
@@ -75,8 +75,8 @@ var eventService = (() => {
           result.image_name = result.image_name;
           result.isActive = event.isActive;
           result.save().then(success => {
-            console.log('event updated', success);
             resolve(success)
+
           })
         })
       }
@@ -95,11 +95,28 @@ var eventService = (() => {
     });
   };
 
+  deleteEventById = (id) => {
+    return EventModel.deleteEventById(id)
+  }
+
+  getLatestEvent = () => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const event_list = await EventModel.find({}).sort({ createdAt: -1 });
+        resolve(event_list[0])
+      } catch (error) {
+        reject(error)
+      }
+
+    })
+  }
+
   return {
     createEvent: createEvent,
     eventList: eventList,
     updateEvent: updateEvent,
-    getEventById: getEventById
+    getEventById: getEventById,
+    getLatestEvent: getLatestEvent
   };
 })();
 
