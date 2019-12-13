@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const { SECRET } = require("../config");
+// const { SECRET } = require("../config");
 const boom = require("boom");
 
 const tokenManagement = {
@@ -10,7 +10,7 @@ const tokenManagement = {
 
     let token = req.headers["authorization"];
 
-    jwt.verify(token, SECRET, (err, decoded) => {
+    jwt.verify(token, 'superscret', (err, decoded) => {
       if (err) {
         return res
           .status(403)
