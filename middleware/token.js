@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-// const { SECRET } = require("../config");
+const { SECRET } = require("../config");
 const boom = require("boom");
 
 const tokenManagement = {
