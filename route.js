@@ -4,7 +4,7 @@ const eventController = require("./controllers/event-controller");
 const serviceController = require('./controllers/service-controller');
 
 router.use('/', () => {
-    resizeBy.json({
+    res.json({
         message: "Welcome to model craft Server"
     })
 })
