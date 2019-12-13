@@ -6,7 +6,7 @@ var eventService = (() => {
   createEvent = event => {
     return new Promise(async (resolve, reject) => {
       try {
-        const is_image_uploaded = await utility.writeFile(event.eventImage);
+        const is_image_uploaded = await utility.writeFile(event.eventImage, 'event');
         const eventModel = new EventModel({
           title: event.title,
           description: event.description,
@@ -14,7 +14,8 @@ var eventService = (() => {
           startDate: event.startDate,
           endDate: event.endDate,
           image_name: is_image_uploaded.imageName,
-          isActive: true
+          isActive: true,
+          featured: false
         });
         if (!eventModel && is_image_uploaded.upload) {
           await utility.unlinkFile(event.eventImage.name);
@@ -44,7 +45,7 @@ var eventService = (() => {
   updateEvent = async event => {
     return new Promise(async (resolve, reject) => {
       if (event.eventImage) {
-        const is_image_uploaded = await utility.writeFile(event.eventImage);
+        const is_image_uploaded = await utility.writeFile(event.eventImage, 'event');
         if (is_image_uploaded.upload) {
           const find_event = await EventModel.findById(event._id);
           await utility.unlinkFile(find_event.image_name);

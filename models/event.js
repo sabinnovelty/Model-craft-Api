@@ -32,7 +32,11 @@ var eventSchema = new Schema({
   },
   isActive: {
     type: Boolean,
-    defaultValue: true
+    default: true
+  },
+  featured: {
+    type: Boolean,
+    defaultValue: false
   }
 }, {
   timestamps: true

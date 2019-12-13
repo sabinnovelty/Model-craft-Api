@@ -10,7 +10,6 @@ router.post("/create", (req, res) => {
   eventService
     .createEvent(req.body)
     .then(event => {
-      event['new'] = 'sd'
       console.log('event created controller', event)
       httpResonse.success(
         res,
@@ -43,6 +42,7 @@ router.get("/list", (req, res) => {
     .eventList()
     .then(eventlist => {
       let map_event_list = eventlist.map(x => {
+        console.log('event list', x)
         return {
           _id: x._id,
           title: x.title,
@@ -53,7 +53,8 @@ router.get("/list", (req, res) => {
           image_name: x.image_name,
           isActive: x.isActive,
           imageName: x.image_name,
-          imagePath: `${image_path}/${x.image_name}`
+          imagePath: `${image_path}/${x.image_name}`,
+          featured: x.featured
         };
       });
       httpResonse.success(res, map_event_list);
@@ -64,8 +65,9 @@ router.get("/list", (req, res) => {
 });
 
 router.get('/new', (req, res) => {
+  let image_path = 'assests/images/event'
   eventService.getLatestEvent().then(result => {
-    httpResonse.success(res, { data: result });
+    httpResonse.success(res, result);
 
   }).catch(error => {
     httpResonse.errorHandler(res, error);
