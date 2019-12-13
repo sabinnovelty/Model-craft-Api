@@ -10,7 +10,7 @@ const tokenManagement = {
 
     let token = req.headers["authorization"];
 
-    jwt.verify(token, 'superscret', (err, decoded) => {
+    jwt.verify(token, SECRET, (err, decoded) => {
       if (err) {
         return res
           .status(403)
