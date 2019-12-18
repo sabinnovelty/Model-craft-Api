@@ -66,7 +66,6 @@ var eventService = (() => {
           reject({ message: 'Internal Server error' })
         }
       } else {
-        console.log('8**', event)
         EventModel.findById(event._id).then(result => {
           result.title = event.title;
           result.description = event.description;

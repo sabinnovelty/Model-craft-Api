@@ -20,7 +20,6 @@ var eventService = (() => {
                 const create_service = serviceModal.save();
                 resolve(create_service);
             } catch (error) {
-                console.log('error', error)
                 // if (is_image_uploaded.upload) {
                 //     await utility.unlinkFile(event.eventImage.name);
                 // }

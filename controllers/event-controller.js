@@ -10,7 +10,6 @@ router.post("/create", (req, res) => {
   eventService
     .createEvent(req.body)
     .then(event => {
-      console.log('event created controller', event)
       httpResonse.success(
         res,
         Object.assign(event, {
@@ -42,7 +41,6 @@ router.get("/list", (req, res) => {
     .eventList()
     .then(eventlist => {
       let map_event_list = eventlist.map(x => {
-        console.log('event list', x)
         return {
           _id: x._id,
           title: x.title,

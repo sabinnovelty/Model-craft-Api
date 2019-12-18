@@ -8,8 +8,7 @@ router.post("/login", (req, res) => {
   authService
     .signIn(req.body)
     .then(user_info => {
-      res.json(user_info);
-      // httpResonse.success(res, user_info);
+      httpResonse.success(res, user_info);
     })
     .catch(error => {
       httpResonse.errorHandler(res, error);

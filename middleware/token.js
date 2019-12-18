@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
-// const { SECRET } = require("../config");
+require("dotenv").config();
 const boom = require("boom");
+
 
 const tokenManagement = {
   verifyToken(req, res, next) {
@@ -26,7 +27,6 @@ const tokenManagement = {
   },
 
   generateToken(user) {
-    console.log("env", SECRET);
     let expiresIn = 86400; //expires in 24 hours
     let token = jwt.sign(
       {

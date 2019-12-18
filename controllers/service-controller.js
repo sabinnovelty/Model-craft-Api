@@ -6,10 +6,8 @@ const path = require("path");
 
 router.post("/create", (req, res) => {
     let image_path = path.join(__dirname, "../", "assests", "images", "event");
-    console.log(req.files, 'files')
     const serviceImage = req.files ? req.files.file : null;
     req.body["serviceImage"] = serviceImage;
-    console.log('service controller', req.body)
     service
         .createService(req.body)
         .then(service => {
