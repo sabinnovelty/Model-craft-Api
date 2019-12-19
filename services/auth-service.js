@@ -11,7 +11,6 @@ var authService = (() => {
       try {
         console.log(user)
         const user_info = await User.findOne({ email: user.email });
-        console.log('user_info', user_info)
         if (!user_info) {
           reject({ message: "Authentication failed!" });
         }
